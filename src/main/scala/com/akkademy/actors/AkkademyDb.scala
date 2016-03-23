@@ -17,12 +17,13 @@ class AkkademyDb(arg:String) extends Actor {
     case SetRequest(key, value) => {
       log.info("request received => key: {}, value: {}, arg: {}", key, value, arg)
       map.put(key, value)
-      sender ! Status.Success
+      log.info(s"SENDER PATH===>${sender.path}")
+      sender() ! Status.Success
     }
     case GetRequest(key) => {
       map.get(key) match {
-        case response:Object => sender ! response
-        case None => sender ! Status.Failure(new KeyNotFoundException(key))
+        case response:Object => sender() ! response
+        case None => sender() ! Status.Failure(new KeyNotFoundException(key))
       }
     }
     case o => log.info("received a message which is unknown {}", o)
